@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200">
+  <!-- Suitcase -->
+  <rect x="40" y="60" width="120" height="90" rx="12" fill="#FF8C42"/>
+  <rect x="80" y="40" width="40" height="25" rx="6" fill="#FFD166"/>
+  <!-- Plane -->
+  <path d="M140 90 L190 70 L185 85 L155 105 Z" fill="#FFFFFF"/>
+  <rect x="70" y="95" width="90" height="10" fill="#FFFFFF"/>
+</svg>

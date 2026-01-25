@@ -1,0 +1,54 @@
+<svg
+  xmlns="http://www.w3.org/2000/svg"
+  viewBox="0 0 256 256"
+  width="256"
+  height="256"
+>
+  <defs>
+    <radialGradient id="blueRing" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#4f83ff"/>
+      <stop offset="100%" stop-color="#1e3a8a"/>
+    </radialGradient>
+
+    <radialGradient id="greenRing" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#4ade80"/>
+      <stop offset="100%" stop-color="#15803d"/>
+    </radialGradient>
+
+    <linearGradient id="orangeGlow" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#ffb703"/>
+      <stop offset="100%" stop-color="#fb5607"/>
+    </linearGradient>
+  </defs>
+
+  <circle cx="128" cy="128" r="128" fill="url(#blueRing)" />
+  <circle cx="128" cy="128" r="108" fill="url(#greenRing)" />
+  <circle cx="128" cy="128" r="94" fill="#fde047" />
+  <circle cx="128" cy="128" r="82" fill="url(#orangeGlow)" />
+
+  <ellipse cx="128" cy="140" rx="48" ry="40" fill="#ffffff" />
+
+  <path d="M96 178 Q128 162 160 178 V210 H96 Z" fill="#ffffff" />
+
+  <circle cx="112" cy="136" r="6" fill="#ff4500" />
+  <circle cx="144" cy="136" r="6" fill="#ff4500" />
+
+  <path
+    d="M112 150 Q128 160 144 150"
+    stroke="#374151"
+    stroke-width="4"
+    fill="none"
+    stroke-linecap="round"
+  />
+
+  <line
+    x1="128"
+    y1="84"
+    x2="128"
+    y2="104"
+    stroke="#374151"
+    stroke-width="4"
+    stroke-linecap="round"
+  />
+  <circle cx="140" cy="80" r="6" fill="#ff4500" />
+</svg>

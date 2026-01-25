@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200">
+  <!-- Wheels -->
+  <circle cx="50" cy="130" r="20" fill="#333"/>
+  <circle cx="150" cy="130" r="20" fill="#333"/>
+  <!-- Body -->
+  <rect x="60" y="100" width="80" height="30" rx="10" fill="#E63946"/>
+  <polygon points="90,100 110,100 120,80 80,80" fill="#E63946"/>
+  <!-- Nose -->
+  <rect x="95" y="70" width="10" height="30" fill="#E63946"/>
+</svg>
