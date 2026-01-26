@@ -1,8 +1,10 @@
 import {useState} from "react";
 import { useNavigate } from "react-router-dom";
 import PostImage from "./PostImage";
+import { useAppContext } from "../context/AppContext";
 
-function CreateSubreddit({subreddits,onCreateSubreddit}){
+function CreateSubreddit(){
+    const {subreddits,createSubreddit} = useAppContext();
     const [title,setTitle] = useState("");
     const [description, setDescription] = useState("");
     const [icon, setIcon] = useState(null);
@@ -24,7 +26,7 @@ function CreateSubreddit({subreddits,onCreateSubreddit}){
             alert("Subreddits Already Exists!");
             return;
         }
-        onCreateSubreddit(newSubreddit);
+        createSubreddit(newSubreddit);
         navigate(`/r/${newSubreddit.name}`)
     }
     function handleIconUpload(e){

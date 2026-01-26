@@ -1,7 +1,9 @@
 import { useState } from "react";
 import {Link, useNavigate, useParams} from "react-router-dom";
+import {useAppContext} from "../context/AppContext";
 
-function Sidebar({subreddits, onDeleteSubreddit}) {
+function Sidebar() {
+  const { subreddits, deleteSubreddit } = useAppContext();
   const [open, setOpen] = useState(false);
   const navigate = useNavigate();
   const [recentOpen,setRecentOpen] = useState(false) //for the recent
@@ -152,7 +154,7 @@ function Sidebar({subreddits, onDeleteSubreddit}) {
               <button className="delete-btn" onClick={() => 
                 {setRemovingName(pendingDelete.name);
                 setTimeout(() => 
-                {onDeleteSubreddit(pendingDelete.name);
+                {deleteSubreddit(pendingDelete.name);
                 setPendingDelete(null);
                 navigate(`/`)
                 }, 200);}}>Remove</button>

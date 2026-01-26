@@ -1,8 +1,10 @@
 import {useState} from "react";
 import {useParams, useNavigate} from "react-router-dom";
 import PostImage from "./PostImage";
+import { useAppContext } from "../context/AppContext";
 
-function CreatePost({subreddits, onCreatePost}){
+function CreatePost(){
+    const {subreddits, createPost} = useAppContext();
     const {subreddit: subredditFromURL} = useParams(); //stores it as subredditFromURL
     const navigate = useNavigate();
 
@@ -22,7 +24,7 @@ function CreatePost({subreddits, onCreatePost}){
             icon,
             subreddit}
         
-        onCreatePost(newpost);
+        createPost(newpost);
 
         navigate(`/r/${subreddit}`);
     }

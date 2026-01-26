@@ -2,13 +2,16 @@ import { useState } from "react"
 import { useParams, Link } from "react-router-dom";
 import PostCard from "../components/PostCard";
 import CreatePost from "../components/CreatePost";
+import {useAppContext} from "../context/AppContext";
 
-function Subreddit({ subreddits, posts, onDeletePost }) {
+function Subreddit() {
+  const { subreddits, posts, deletePost } = useAppContext();
+
   const { subreddit } = useParams();
   const postsForSubreddit = posts?.allIds?.map(id=>posts.byId[id]).filter(post=>post.subreddit === subreddit) || [];
   const currentSubreddit = subreddits.byId[subreddit]
   function handleDeletePost(id) {
-    onDeletePost(id);
+    deletePost(id);
   }
 
   return (
@@ -30,7 +33,7 @@ function Subreddit({ subreddits, posts, onDeletePost }) {
           key={post.id}
           post = {post}
           onLike={()=> console.log("Liked Post", post.id)}
-          onDelete={()=> handleDeletePost(post.id)}
+          onDelete={()=> deletePost(post.id)}
         />
       ))}
     </div>
