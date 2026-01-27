@@ -1,15 +1,17 @@
-import { useState } from "react"
+import {useMemo} from "react";
 import { useParams, Link } from "react-router-dom";
 import PostCard from "../components/PostCard";
-import CreatePost from "../components/CreatePost";
+import { getPostsForSubreddit } from "../selectors/postSelectors";
+import { getSubredditByName } from "../selectors/subredditSelector";
 import {useAppContext} from "../context/AppContext";
 
 function Subreddit() {
   const { subreddits, posts, deletePost } = useAppContext();
-
   const { subreddit } = useParams();
-  const postsForSubreddit = posts?.allIds?.map(id=>posts.byId[id]).filter(post=>post.subreddit === subreddit) || [];
-  const currentSubreddit = subreddits.byId[subreddit]
+  const currentSubreddit = useMemo(()=> {getSubredditByName(subreddits,subreddit);
+  },[subreddits,subreddit])
+  const postsForSubreddit = useMemo(()=>{getPostsForSubreddit(posts, subreddit);
+  },[posts,subreddit])
   function handleDeletePost(id) {
     deletePost(id);
   }
