@@ -3,7 +3,7 @@ import Navbar from "./components/Navbar";
 import Sidebar from "./components/Sidebar";
 import Home from "./pages/Home";
 import Subreddit from "./pages/Subreddit";
-import Post from "./pages/Post";
+import Popular from "./pages/Popular";
 import CreatePost from "./components/CreatePost";
 import CreateSubreddit from "./components/CreateSubreddit";
 import ErrorBoundary from "./ErrorBoundary";
@@ -21,7 +21,7 @@ function App() {
               <Route path="/" element={<Home />} />
               <Route path="/r/:subreddit" element={<Subreddit/>} />
               <Route path="/r/:subreddit/submit" element={<CreatePost />}/>
-              <Route path="/post/:id" element={<Post />} />
+              <Route path="/popular-posts" element={<Popular />} />
               <Route path="/create-subreddit" element={<CreateSubreddit />}/>
             </Routes>
           </main>

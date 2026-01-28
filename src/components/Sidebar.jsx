@@ -59,8 +59,7 @@ function Sidebar() {
     <aside className="sidebar">
         <nav className = "sidebar-nav">
             <Link to="/" className="sidebar-item">🏠 Home</Link>
-            <Link to="/r/javascript" className="sidebar-item">🎈 Popular</Link>
-            <Link to="/post/123"className="sidebar-item">🌴 Explore</Link>
+            <Link to="popular-posts"className="sidebar-item">🐙 Popular</Link>
             <div className="sidebar-item">+ Start a Community</div>
         </nav>
         <hr/>

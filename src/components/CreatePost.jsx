@@ -22,10 +22,10 @@ function CreatePost(){
             title,
             body,
             icon,
-            subreddit}
-        
+            subreddit,
+            upvotes: 0,
+        }
         createPost(newpost);
-
         navigate(`/r/${subreddit}`);
     }
     function handleIconUpload(e){

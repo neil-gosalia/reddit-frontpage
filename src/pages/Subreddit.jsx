@@ -8,9 +8,11 @@ import {useAppContext} from "../context/AppContext";
 function Subreddit() {
   const { subreddits, posts, deletePost } = useAppContext();
   const { subreddit } = useParams();
-  const currentSubreddit = useMemo(()=> {getSubredditByName(subreddits,subreddit);
+  const currentSubreddit = useMemo(()=> {
+    return getSubredditByName(subreddits,subreddit);
   },[subreddits,subreddit])
-  const postsForSubreddit = useMemo(()=>{getPostsForSubreddit(posts, subreddit);
+  const postsForSubreddit = useMemo(()=>{
+    return getPostsForSubreddit(posts, subreddit);
   },[posts,subreddit])
   function handleDeletePost(id) {
     deletePost(id);

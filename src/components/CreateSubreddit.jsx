@@ -53,7 +53,6 @@ function CreateSubreddit(){
             onChange={e => setTitle(e.target.value)}
             required
         />
-
         <textarea
             className="create-post-title"
             placeholder="Description"
@@ -63,7 +62,7 @@ function CreateSubreddit(){
         <input type="file" accept="image/*"  id="imageUpload" hidden onChange={handleIconUpload}/>
         <label htmlFor="imageUpload" className="image-upload">
             <span>📷 Upload Icon</span>
-            {icon && <img src={icon} className="post-preview"/>}
+            {icon && <PostImage src={icon}/>}
         </label>
         <input type="file" accept="image/*" id="bannerUpload" hidden onChange={handleBannerUpload}/>
         <label htmlFor="bannerUpload" className="image-upload">

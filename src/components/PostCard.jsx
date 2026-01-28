@@ -1,34 +1,44 @@
 import {useState, useEffect} from "react"
 import PostImage from "./PostImage"
+import { useAppContext } from "../context/AppContext";
 
-function PostCard({id,post, onLike, onDelete}){
-    const savedVote = JSON.parse(localStorage.getItem(`vote-${id}`)) || {count:0, userVote: 0}
-    const [voteCount,setVoteCount] = useState(savedVote.count)
+function PostCard({post}){
+    const savedVote = JSON.parse(localStorage.getItem(`vote-${post.id}`)) || {count:0, userVote: 0}
     const [userVote, setUserVote] = useState(savedVote.userVote)
-    useEffect(()=>{
-        localStorage.setItem(`vote-${id}`,JSON.stringify({
-            count: voteCount,
-            userVote
-        }));
-    },[voteCount,userVote,id])
-
-    function handleUpvote(){
-        if(userVote===1){
-            setVoteCount(voteCount-1)
-            setUserVote(0)
+    useEffect(() => {localStorage.setItem(`vote-${post.id}`,JSON.stringify({ userVote }));
+    }, [post.id, userVote]);
+    const { upvotePost, downvotePost, deletePost } = useAppContext();
+    function handleUpvote() {
+        if (userVote === 1) {
+      // remove upvote
+            downvotePost(post.id);
+            setUserVote(0);
         }else{
-            setVoteCount(voteCount+(userVote===0?1:2))
-            setUserVote(1)
+            if (userVote === -1) {
+                // switching from downvote → upvote
+                upvotePost(post.id);
+                upvotePost(post.id);
+            } else {
+                upvotePost(post.id);
+            }
+            setUserVote(1);
         }
     }
 
-    function handleDownvote(){
-        if(userVote===-1){
-            setVoteCount(voteCount+1)
-            setUserVote(0)
-        }else{
-            setVoteCount(voteCount-(userVote===0?1:2))
-            setUserVote(-1)
+    function handleDownvote() {
+        if (userVote === -1) {
+        // remove downvote
+        upvotePost(post.id);
+        setUserVote(0);
+        } else {
+        if (userVote === 1) {
+            // switching from upvote → downvote
+            downvotePost(post.id);
+            downvotePost(post.id);
+        } else {
+            downvotePost(post.id);
+        }
+        setUserVote(-1);
         }
     }
     return(
@@ -39,11 +49,11 @@ function PostCard({id,post, onLike, onDelete}){
             <div className="options">
                 <div className="vote-container">
                     <button className={`vote-btn ${userVote===1?"active":""}`} onClick={handleUpvote}>⬆️</button>
-                    <div className="vote-count">{voteCount}</div>
+                    <div className="vote-count">{post.upvotes}</div>
                     <button className={`vote-btn ${userVote===-1?"active":""}`} onClick={handleDownvote}>⬇️</button>
                 </div>
-                <button className="action-btn" onClick={onLike}>👍 Like</button>
-                <button className="action-btn" onClick={onDelete}>🗑️ Delete</button>
+                <button className="action-btn" onClick={()=>console.log("Liked Post",post.id)}>👍 Like</button>
+                <button className="action-btn" onClick={()=>deletePost(post.id)}>🗑️ Delete</button>
             </div>
         </div>
     );

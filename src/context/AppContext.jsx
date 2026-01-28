@@ -18,6 +18,35 @@ const initialState = {
 function appReducer(state, action) {
   switch (action.type) {
 
+    case "HYDRATE_POSTS": {
+      const apiPosts = action.payload;
+
+      const byId = {...state.posts.byId};
+      const allIds = [...state.posts.allIds];
+
+      apiPosts.forEach(post => {
+        const id = post.id.toString();
+        if (!byId[id]){
+          byId[id] = {
+            id,
+            title: post.title,
+            body: post.body,
+            subreddit: "home",
+            upvotes: 0,
+            source: "api",
+          }
+        allIds.push(id);
+        }
+      });
+
+      return {
+        ...state,
+        posts: {
+          byId,
+          allIds
+        }
+      };
+    }
     case "CREATE_POST": {
       const post = action.payload;
 
@@ -91,6 +120,44 @@ function appReducer(state, action) {
       };
     }
 
+    case "UPVOTE_POST": {
+      const id = action.payload;
+      const post = state.posts.byId[id];
+
+      return {
+        ...state,
+        posts: {
+          ...state.posts,
+          byId: {
+            ...state.posts.byId,
+            [id]: {
+              ...post,
+              upvotes: (post.upvotes??0) + 1
+            }
+          }
+        }
+      };
+    }
+
+    case "DOWNVOTE_POST": {
+      const id = action.payload;
+      const post = state.posts.byId[id];
+
+      return {
+        ...state,
+        posts: {
+          ...state.posts,
+          byId: {
+            ...state.posts.byId,
+            [id]: {
+              ...post,
+              upvotes: (post.upvotes??0) - 1
+            }
+          }
+        }
+      };
+    }
+
     default:
       return state;
   }
@@ -125,6 +192,20 @@ export function AppProvider({ children }) {
   useEffect(() => {
     localStorage.setItem("app_state", JSON.stringify(state));
   }, [state]);
+  useEffect(() => {
+    async function fetchPosts() {
+      try {
+        const res = await fetch("https://jsonplaceholder.typicode.com/posts");
+        const data = await res.json();
+
+        dispatch({type: "HYDRATE_POSTS",payload: data.slice(0, 10)});
+      } catch (err) {
+        console.error("Failed to fetch posts", err);
+      }
+    }
+
+    fetchPosts();
+  }, []);
 
   const createPost = post =>
     dispatch({ type: "CREATE_POST", payload: post });
@@ -138,6 +219,11 @@ export function AppProvider({ children }) {
   const deleteSubreddit = name =>
     dispatch({ type: "DELETE_SUBREDDIT", payload: name });
 
+  const upvotePost = id =>
+    dispatch({type: "UPVOTE_POST",payload: id});
+
+  const downvotePost = id =>
+    dispatch({type: "DOWNVOTE_POST",payload: id});
   return (
     <AppContext.Provider
       value={{
@@ -146,7 +232,9 @@ export function AppProvider({ children }) {
         createPost,
         deletePost,
         createSubreddit,
-        deleteSubreddit
+        deleteSubreddit,
+        upvotePost,
+        downvotePost,
       }}
     >
       {children}
