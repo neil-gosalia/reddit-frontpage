@@ -1,6 +1,6 @@
 import { useState } from "react";
-import {Link, useNavigate, useParams} from "react-router-dom";
-import {useAppContext} from "../context/AppContext";
+import {Link, useNavigate} from "react-router-dom";
+import { useAppContext } from "../context/useAppContext";
 
 function Sidebar() {
   const { subreddits, deleteSubreddit } = useAppContext();

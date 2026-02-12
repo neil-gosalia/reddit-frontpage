@@ -4,6 +4,7 @@ import Sidebar from "./components/Sidebar";
 import Home from "./pages/Home";
 import Subreddit from "./pages/Subreddit";
 import Popular from "./pages/Popular";
+import Post from "./pages/Post";
 import CreatePost from "./components/CreatePost";
 import CreateSubreddit from "./components/CreateSubreddit";
 import ErrorBoundary from "./ErrorBoundary";
@@ -20,6 +21,7 @@ function App() {
             <Routes>
               <Route path="/" element={<Home />} />
               <Route path="/r/:subreddit" element={<Subreddit/>} />
+              <Route path="/r/:subreddit/comments/:id" element={<Post />} />
               <Route path="/r/:subreddit/submit" element={<CreatePost />}/>
               <Route path="/popular-posts" element={<Popular />} />
               <Route path="/create-subreddit" element={<CreateSubreddit />}/>

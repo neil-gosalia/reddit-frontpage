@@ -1,7 +1,8 @@
 import {useState} from "react";
 import { useNavigate } from "react-router-dom";
 import PostImage from "./PostImage";
-import { useAppContext } from "../context/AppContext";
+import { useAppContext } from "../context/useAppContext";
+import { fileToBase64 } from "../utils/fileUtils";
 
 function CreateSubreddit(){
     const {subreddits,createSubreddit} = useAppContext();
@@ -29,16 +30,26 @@ function CreateSubreddit(){
         createSubreddit(newSubreddit);
         navigate(`/r/${newSubreddit.name}`)
     }
-    function handleIconUpload(e){
+    async function handleIconUpload(e){
         const file = e.target.files[0];
         if (file){
-            setIcon(URL.createObjectURL(file))
+            try {
+                const base64 = await fileToBase64(file);
+                setIcon(base64);
+            } catch (err) {
+                console.error("Error converting icon", err);
+            }
         }
     }
-    function handleBannerUpload(e){
+    async function handleBannerUpload(e){
         const file = e.target.files[0];
         if (file){
-            setBanner(URL.createObjectURL(file))
+            try {
+                const base64 = await fileToBase64(file);
+                setBanner(base64);
+            } catch (err) {
+                console.error("Error converting banner", err);
+            }
         }
     }
     
