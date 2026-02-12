@@ -1,17 +1,18 @@
 import {useState} from "react";
 import {useParams, useNavigate} from "react-router-dom";
 import PostImage from "./PostImage";
-import { useAppContext } from "../context/AppContext";
+import { useAppContext } from "../context/useAppContext";
+import { fileToBase64 } from "../utils/fileUtils";
 
 function CreatePost(){
-    const {subreddits, createPost} = useAppContext();
-    const {subreddit: subredditFromURL} = useParams(); //stores it as subredditFromURL
+    const { createPost } = useAppContext();
+    const { subreddit: subredditFromURL } = useParams(); //stores it as subredditFromURL
     const navigate = useNavigate();
 
     const [title,setTitle] = useState("")
     const [body,setBody] = useState("")
     const [icon,setIcon] = useState(null)
-    const [subreddit,setSubreddit] = useState(
+    const [subreddit] = useState(
         subredditFromURL || ""
     )
     function handleSubmit(e){
@@ -28,10 +29,15 @@ function CreatePost(){
         createPost(newpost);
         navigate(`/r/${subreddit}`);
     }
-    function handleIconUpload(e){
+    async function handleIconUpload(e){
         const file = e.target.files[0];
         if (file){
-            setIcon(URL.createObjectURL(file))
+            try {
+                const base64 = await fileToBase64(file);
+                setIcon(base64);
+            } catch (err) {
+                console.error("Error converting image", err);
+            }
         }
     }
     return (

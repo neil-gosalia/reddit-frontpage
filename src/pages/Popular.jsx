@@ -1,5 +1,5 @@
 import { useMemo } from "react";
-import {useAppContext} from "../context/AppContext"
+import { useAppContext } from "../context/useAppContext"
 import { getPopularPosts } from "../selectors/postSelectors";
 import PostCard from "../components/PostCard";
 

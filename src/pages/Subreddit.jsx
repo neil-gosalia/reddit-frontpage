@@ -3,7 +3,7 @@ import { useParams, Link } from "react-router-dom";
 import PostCard from "../components/PostCard";
 import { getPostsForSubreddit } from "../selectors/postSelectors";
 import { getSubredditByName } from "../selectors/subredditSelector";
-import {useAppContext} from "../context/AppContext";
+import { useAppContext } from "../context/useAppContext";
 
 function Subreddit() {
   const { subreddits, posts, deletePost } = useAppContext();
@@ -14,9 +14,6 @@ function Subreddit() {
   const postsForSubreddit = useMemo(()=>{
     return getPostsForSubreddit(posts, subreddit);
   },[posts,subreddit])
-  function handleDeletePost(id) {
-    deletePost(id);
-  }
 
   return (
     <div>
