@@ -1,162 +1,50 @@
 import { createContext, useContext, useReducer, useEffect } from "react";
 
 const AppContext = createContext(null);
-
+const API_BASE = "https://reddit-frontpage-backend.onrender.com";
 
 const initialState = {
-  posts: {
-    byId: {},
-    allIds: []
-  },
-  subreddits: {
-    byId: {},
-    allIds: []
-  }
+  posts: [],
+  subreddits: [],
 };
-
 
 function appReducer(state, action) {
   switch (action.type) {
-
-    case "HYDRATE_POSTS": {
-      const apiPosts = action.payload;
-
-      const byId = {...state.posts.byId};
-      const allIds = [...state.posts.allIds];
-
-      apiPosts.forEach(post => {
-        const id = post.id.toString();
-        if (!byId[id]){
-          byId[id] = {
-            id,
-            title: post.title,
-            body: post.body,
-            subreddit: "home",
-            upvotes: 0,
-            source: "api",
-          }
-        allIds.push(id);
-        }
-      });
-
+    case "SET_POSTS":
+      const byId = {};
+      const allIds = [];
+      action.payload.forEach(post=>{
+        byId[post.id] = post;
+        allIds.push(post.id);
+      })
       return {
         ...state,
-        posts: {
-          byId,
-          allIds
-        }
+        posts: {byId,allIds}
       };
-    }
-    case "CREATE_POST": {
-      const post = action.payload;
 
+    case "SET_SUBREDDITS":{
+      const byId = {};
+      const allIds = [];
+      action.payload.forEach(sub=>{
+        byId[sub.name] = sub;
+        allIds.push(sub.name)
+      })
       return {
         ...state,
-        posts: {
-          byId: {
-            ...state.posts.byId,
-            [post.id]: post
-          },
-          allIds: [post.id, ...state.posts.allIds]
-        }
-      };
+        subreddits: {byId,allIds}
+      }
     }
-
-    case "DELETE_POST": {
-      const id = action.payload;
-      const { [id]: _, ...rest } = state.posts.byId;
-
+    case "ADD_POST":
       return {
         ...state,
-        posts: {
-          byId: rest,
-          allIds: state.posts.allIds.filter(pid => pid !== id)
-        }
+        posts: [action.payload, ...state.posts],
       };
-    }
 
-
-    case "CREATE_SUBREDDIT": {
-      const sub = action.payload;
-
+    case "ADD_SUBREDDIT":
       return {
         ...state,
-        subreddits: {
-          byId: {
-            ...state.subreddits.byId,
-            [sub.name]: sub
-          },
-          allIds: [...state.subreddits.allIds, sub.name]
-        }
+        subreddits: [...state.subreddits, action.payload],
       };
-    }
-
-    case "DELETE_SUBREDDIT": {
-      const name = action.payload;
-
-
-      const { [name]: _, ...remainingSubs } = state.subreddits.byId;
-
-      const newPostsById = {};
-      const newPostsAllIds = [];
-
-      state.posts.allIds.forEach(id => {
-        const post = state.posts.byId[id];
-        if (post.subreddit !== name) {
-          newPostsById[id] = post;
-          newPostsAllIds.push(id);
-        }
-      });
-
-      return {
-        posts: {
-          byId: newPostsById,
-          allIds: newPostsAllIds
-        },
-        subreddits: {
-          byId: remainingSubs,
-          allIds: state.subreddits.allIds.filter(id => id !== name)
-        }
-      };
-    }
-
-    case "UPVOTE_POST": {
-      const id = action.payload;
-      const post = state.posts.byId[id];
-
-      return {
-        ...state,
-        posts: {
-          ...state.posts,
-          byId: {
-            ...state.posts.byId,
-            [id]: {
-              ...post,
-              upvotes: (post.upvotes??0) + 1
-            }
-          }
-        }
-      };
-    }
-
-    case "DOWNVOTE_POST": {
-      const id = action.payload;
-      const post = state.posts.byId[id];
-
-      return {
-        ...state,
-        posts: {
-          ...state.posts,
-          byId: {
-            ...state.posts.byId,
-            [id]: {
-              ...post,
-              upvotes: (post.upvotes??0) - 1
-            }
-          }
-        }
-      };
-    }
 
     default:
       return state;
@@ -164,77 +52,66 @@ function appReducer(state, action) {
 }
 
 export function AppProvider({ children }) {
-  const [state, dispatch] = useReducer(
-    appReducer,
-    initialState,
-    () => {
-      const saved = localStorage.getItem("app_state");
-      if (!saved) return initialState;
+  const [state, dispatch] = useReducer(appReducer, initialState);
 
-      try {
-        const parsed = JSON.parse(saved);
-        return {
-          posts: {
-            byId: parsed.posts?.byId || {},
-            allIds: parsed.posts?.allIds || []
-          },
-          subreddits: {
-            byId: parsed.subreddits?.byId || {},
-            allIds: parsed.subreddits?.allIds || []
-          }
-        };
-      } catch {
-        return initialState;
-      }
+  const fetchPosts = async () => {
+    try {
+      const res = await fetch(`${API_BASE}/posts`);
+      const data = await res.json();
+      dispatch({ type: "SET_POSTS", payload: data });
+    } catch (err) {
+      console.error("Failed to fetch posts", err);
     }
-  );
+  };
 
-  useEffect(() => {
-    localStorage.setItem("app_state", JSON.stringify(state));
-  }, [state]);
-  useEffect(() => {
-    async function fetchPosts() {
-      try {
-        const res = await fetch("https://jsonplaceholder.typicode.com/posts");
-        const data = await res.json();
+  const createPost = async (postData) => {
+    const res = await fetch(`${API_BASE}/posts`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(postData),
+    });
 
-        dispatch({type: "HYDRATE_POSTS",payload: data.slice(0, 10)});
-      } catch (err) {
-        console.error("Failed to fetch posts", err);
-      }
+    const createdPost = await res.json();
+    dispatch({ type: "ADD_POST", payload: createdPost });
+  };
+
+  // -------- SUBREDDITS --------
+  const fetchSubreddits = async () => {
+    try {
+      const res = await fetch(`${API_BASE}/subreddits`);
+      const data = await res.json();
+      dispatch({ type: "SET_SUBREDDITS", payload: data });
+    } catch (err) {
+      console.error("Failed to fetch subreddits", err);
     }
+  };
 
+  const createSubreddit = async (name) => {
+    const res = await fetch(`${API_BASE}/subreddits`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ name }),
+    });
+
+    const subreddit = await res.json();
+    dispatch({ type: "ADD_SUBREDDIT", payload: subreddit });
+  };
+
+  // -------- INITIAL LOAD --------
+  useEffect(() => {
     fetchPosts();
+    fetchSubreddits();
   }, []);
 
-  const createPost = post =>
-    dispatch({ type: "CREATE_POST", payload: post });
-
-  const deletePost = id =>
-    dispatch({ type: "DELETE_POST", payload: id });
-
-  const createSubreddit = sub =>
-    dispatch({ type: "CREATE_SUBREDDIT", payload: sub });
-
-  const deleteSubreddit = name =>
-    dispatch({ type: "DELETE_SUBREDDIT", payload: name });
-
-  const upvotePost = id =>
-    dispatch({type: "UPVOTE_POST",payload: id});
-
-  const downvotePost = id =>
-    dispatch({type: "DOWNVOTE_POST",payload: id});
   return (
     <AppContext.Provider
       value={{
         posts: state.posts,
         subreddits: state.subreddits,
         createPost,
-        deletePost,
         createSubreddit,
-        deleteSubreddit,
-        upvotePost,
-        downvotePost,
+        fetchPosts,
+        fetchSubreddits,
       }}
     >
       {children}
@@ -245,9 +122,7 @@ export function AppProvider({ children }) {
 export function useAppContext() {
   const context = useContext(AppContext);
   if (!context) {
-    throw new Error(
-      "useAppContext must be used within an AppProvider"
-    );
+    throw new Error("useAppContext must be used within an AppProvider");
   }
   return context;
 }
