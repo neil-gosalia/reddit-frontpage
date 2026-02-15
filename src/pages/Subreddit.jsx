@@ -24,7 +24,7 @@ function Subreddit() {
         <div className="subreddit-banner" style={{backgroundImage: `url(${currentSubreddit?.banner})`}}>
         </div>
         <div style={{display:"flex",alignItems:"center"}}>
-          <h2>r/{currentSubreddit?.title}</h2>
+          <h2>r/{currentSubreddit?.name}</h2>
           <Link className="create-post-btn" to={`/r/${subreddit}/submit`}>➕ Create Post</Link>
         </div>
           <p>{currentSubreddit?.description}</p>

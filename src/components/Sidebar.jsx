@@ -131,7 +131,7 @@ function Sidebar() {
               onClick={() => setActiveSubreddit(sub.name)}
             >
               <img src={sub.icon} className="subreddit-icon" />
-              <span>r/{sub.title}</span>
+              <span>r/{sub.name}</span>
             </Link>
             <button
               className="subreddit-delete"

@@ -31,9 +31,10 @@ function CreateSubreddit() {
         placeholder="Subreddit name"
         value={name}
         onChange={(e) => setName(e.target.value)}
+        className="create-subreddit-title"
       />
 
-      <button type="submit">Create</button>
+      <button type="submit" className="create-subreddit-save">Create</button>
     </form>
   );
 }
