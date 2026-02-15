@@ -65,7 +65,7 @@ function Sidebar() {
         <hr/>
       <button className="sidebar-toggle" onClick={() => setOpen(!open)}>
         CUSTOM FEEDS
-        <span>{setOpen ? "▲" : "▼"}</span> 
+        <span>{open ? "▲" : "▼"}</span> 
       </button>
 
       {open && (
@@ -119,8 +119,9 @@ function Sidebar() {
         </div>)}
     <hr/>
     <h4>Subreddits</h4>
-      {subreddits.allIds.map(id=>{
+      {(subreddits?.allIds|| []).map(id=>{
         const sub = subreddits.byId[id];
+        if  (!sub) return null;
         return(
           <div key={sub.name} className={`subreddit-row${
             activeSubreddit===sub.name? ".active":""}${removingName === sub.name ? ".removing" : ""}`}>

@@ -75,7 +75,6 @@ export function AppProvider({ children }) {
     dispatch({ type: "ADD_POST", payload: createdPost });
   };
 
-  // -------- SUBREDDITS --------
   const fetchSubreddits = async () => {
     try {
       const res = await fetch(`${API_BASE}/subreddits`);
