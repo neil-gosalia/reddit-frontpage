@@ -4,7 +4,7 @@ import PostCard from "../components/PostCard";
 function Home() {
   const { posts } = useAppContext();
 
-  const postList = posts.allIds
+  const postList = (posts?.allIds || [])
     .map(id => posts.byId[id])
     .filter(Boolean);
 
