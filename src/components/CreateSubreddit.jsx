@@ -34,7 +34,7 @@ function CreateSubreddit() {
         className="create-subreddit-title"
       />
 
-      <button type="submit" className="create-subreddit-save">Create</button>
+      <button type="submit" className="create-subreddit-save">Create Subreddit</button>
     </form>
   );
 }
