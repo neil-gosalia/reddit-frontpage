@@ -26,26 +26,73 @@ function appReducer(state, action) {
       const byId = {};
       const allIds = [];
       action.payload.forEach(sub=>{
-        byId[sub.name] = sub;
-        allIds.push(sub.name)
+        byId[sub.id] = sub;
+        allIds.push(sub.id)
       })
       return {
         ...state,
         subreddits: {byId,allIds}
       }
     }
-    case "ADD_POST":
+    case "ADD_POST":{
+      const newPost = action.payload;
       return {
         ...state,
-        posts: [action.payload, ...state.posts],
+        posts: {
+          byId: {
+            ...state.posts.byId,
+            [newPost.id]: newPost},
+          allIds: [newPost.id,...state.posts.allIds],
+          }
+        }
       };
 
-    case "ADD_SUBREDDIT":
+    case "ADD_SUBREDDIT":{
+      const newSub = action.payload;
       return {
         ...state,
-        subreddits: [...state.subreddits, action.payload],
+        subreddits: {
+          byId:{
+            ...state.subreddits.byId,
+            [newSub.id]: newSub,
+          },
+          allIds:[newSub.id,...state.subreddits.allIds],
+        }
       };
-
+    }
+    case "DELETE_POST":{
+      const id = action.payload;
+      const { [id]: _, ...remainingById } = state.posts.byId;
+      return{
+        ...state,
+          posts:{
+            byId: remainingById,
+            allIds:state.posts.allIds.filter(postId=>postId !== id)
+          }
+        }
+      }
+    case "DELETE_SUBREDDIT": {
+      const id = action.payload;
+      const { [id]: _, ...remainingSubs } = state.subreddits.byId;
+      const filteredPostIds = state.posts.allIds.filter(
+        postId => state.posts.byId[postId].subreddit !== id
+        );
+      const filteredById = {};
+      filteredPostIds.forEach(postId => {
+        filteredById[postId] = state.posts.byId[postId];
+      });
+      return {
+        ...state,
+        subreddits: {
+          byId: remainingSubs,
+          allIds: state.subreddits.allIds.filter(subId => subId !== id),
+        },
+        posts: {
+          byId: filteredById,
+          allIds: filteredPostIds,
+        },
+      };
+    }
     default:
       return state;
   }
@@ -84,7 +131,6 @@ export function AppProvider({ children }) {
       console.error("Failed to fetch subreddits", err);
     }
   };
-
   const createSubreddit = async (name) => {
     const res = await fetch(`${API_BASE}/subreddits`, {
       method: "POST",
@@ -95,8 +141,26 @@ export function AppProvider({ children }) {
     const subreddit = await res.json();
     dispatch({ type: "ADD_SUBREDDIT", payload: subreddit });
   };
-
-  // -------- INITIAL LOAD --------
+  const deletePost = async (id)=>{
+    try{
+      const res = await fetch(`${API_BASE}/posts/${id}`,{method:"DELETE"})
+      if(!res.ok) throw new Error("Failed to delete post.");
+      dispatch({ type: "DELETE_POST", payload: id });
+    }catch(err){
+      console.error(err);
+    }
+  };
+  const deleteSubreddit = async (name) => {
+    try {
+      const res = await fetch(`${API_BASE}/subreddits/${id}`, {
+        method: "DELETE",
+      });
+      if (!res.ok) throw new Error("Failed to delete subreddit");
+      dispatch({ type: "DELETE_SUBREDDIT", payload: id });
+    } catch (err) {
+      console.error(err);
+    }
+  };
   useEffect(() => {
     fetchPosts();
     fetchSubreddits();
@@ -111,6 +175,8 @@ export function AppProvider({ children }) {
         createSubreddit,
         fetchPosts,
         fetchSubreddits,
+        deletePost,
+        deleteSubreddit,
       }}
     >
       {children}

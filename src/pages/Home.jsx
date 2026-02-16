@@ -11,7 +11,6 @@ function Home() {
   return (
     <div>
       <h2>Home Feed</h2>
-
       {postList.length === 0 && <p>No posts yet</p>}
 
       {postList.map(post => (

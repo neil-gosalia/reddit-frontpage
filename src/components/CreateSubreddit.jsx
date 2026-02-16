@@ -17,6 +17,7 @@ function CreateSubreddit() {
       await createSubreddit(name);
       setName("");
       navigate("/");
+      navigate(`r/${name}`);
     } catch (err) {
       console.error("Failed to create subreddit", err);
     }

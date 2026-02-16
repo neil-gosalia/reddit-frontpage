@@ -147,14 +147,14 @@ function Sidebar() {
       {pendingDelete && (
         <div className="modal-overlay">
           <div className="modal">
-            <h3>Remove r/{pendingDelete.title}?</h3>
+            <h3>Remove r/{pendingDelete.name}?</h3>
             <p>This will remove it from your sidebar.</p>
             <div className="modal-actions">
               <button className="cancel-btn" onClick={()=>setPendingDelete(null)}>Cancel</button>
               <button className="delete-btn" onClick={() => 
                 {setRemovingName(pendingDelete.name);
                 setTimeout(() => 
-                {deleteSubreddit(pendingDelete.name);
+                {deleteSubreddit(pendingDelete.id);
                 setPendingDelete(null);
                 navigate(`/`)
                 }, 200);}}>Remove</button>
