@@ -12,8 +12,8 @@ function Subreddit() {
     return getSubredditByName(subreddits,subreddit);
   },[subreddits,subreddit])
   const postsForSubreddit = useMemo(()=>{
-    return getPostsForSubreddit(posts, subreddit);
-  },[posts,subreddit])
+    return getPostsForSubreddit(posts,subreddits, subreddit);
+  },[posts,subreddits, subreddit])
   function handleDeletePost(id) {
     deletePost(id);
   }
