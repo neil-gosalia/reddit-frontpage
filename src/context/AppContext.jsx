@@ -124,6 +124,7 @@ export function AppProvider({ children }) {
   // ---------------- CREATE POST ----------------
   const createPost = async (postData) => {
     try {
+      console.log("Sending to backend", postData)
       const res = await fetch(`${API_BASE}/posts`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -131,6 +132,7 @@ export function AppProvider({ children }) {
       });
 
       const createdPost = await res.json();
+      console.log("Backend returned:", createdPost);
       dispatch({ type: "ADD_POST", payload: createdPost });
     } catch (err) {
       console.error("Failed to create post", err);

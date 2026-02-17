@@ -1,32 +1,54 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useAppContext } from "../context/AppContext";
-
+import { slugify } from "../utils/slugify";
 function CreatePost() {
-  const { createPost } = useAppContext();
-  const { subreddit: subredditFromURL } = useParams();
+  const { createPost, subreddits } = useAppContext();
+  const { slug } = useParams(); // this is the subreddit name for now
   const navigate = useNavigate();
 
   const [title, setTitle] = useState("");
   const [body, setBody] = useState("");
-  const [subreddit, setSubreddit] = useState(subredditFromURL || "");
+
+  // 🔥 Resolve subreddit from URL
+  const currentSubreddit = useMemo(() => {
+    if (!slug) return null;
+
+    return subreddits.allIds
+      .map(id => subreddits.byId[id])
+      .find(sub => slugify(sub.name) === slug) || null;
+
+  }, [subreddits, slug]);
 
   async function handleSubmit(e) {
     e.preventDefault();
+
+    if (!title.trim() || !body.trim()) {
+      console.error("Title and body required");
+      return;
+    }
+
+    if (!currentSubreddit) {
+      console.error("Subreddit not found");
+      return;
+    }
 
     try {
       await createPost({
         title,
         body,
-        subreddit,
+        subredditId: currentSubreddit.id  // ✅ THIS IS CRITICAL
       });
 
-      navigate("/");
+      // Navigate back to that subreddit page
+      navigate(`/r/${slug}`);
+
+      // Reset form
       setTitle("");
       setBody("");
-      setSubreddit("");
+
     } catch (err) {
-      console.error(err);
+      console.error("Failed to create post", err);
     }
   }
 
@@ -43,9 +65,9 @@ function CreatePost() {
       />
 
       <textarea
-        className="create-post-title"
-        value={body}
+        className="create-post-body"
         placeholder="Post Description"
+        value={body}
         onChange={(e) => setBody(e.target.value)}
       />
 

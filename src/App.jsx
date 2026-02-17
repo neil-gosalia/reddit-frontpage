@@ -19,8 +19,8 @@ function App() {
           <main className="content">
             <Routes>
               <Route path="/" element={<Home />} />
-              <Route path="/r/:subreddit" element={<Subreddit/>} />
-              <Route path="/r/:subreddit/submit" element={<CreatePost />}/>
+              <Route path="/r/:slug" element={<Subreddit/>} />
+              <Route path="/r/:slug/submit" element={<CreatePost />}/>
               <Route path="/popular-posts" element={<Popular />} />
               <Route path="/create-subreddit" element={<CreateSubreddit />}/>
             </Routes>

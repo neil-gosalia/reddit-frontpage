@@ -1,10 +1,12 @@
-export function getPostsForSubreddit(posts, subreddits, subredditName) {
+import { slugify } from "../utils/slugify";
+
+export function getPostsForSubreddit(posts, subreddits, slug) {
   if (!posts || !subreddits) return [];
 
-  // Step 1: Find subreddit by name
+  // Step 1: Resolve slug → subreddit
   const subreddit = subreddits.allIds
     .map(id => subreddits.byId[id])
-    .find(sub => sub.name === subredditName);
+    .find(sub => slugify(sub.name) === slug);
 
   if (!subreddit) return [];
 

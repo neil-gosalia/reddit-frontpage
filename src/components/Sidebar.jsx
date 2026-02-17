@@ -1,6 +1,7 @@
 import { useState } from "react";
 import {Link, useNavigate, useParams} from "react-router-dom";
 import {useAppContext} from "../context/AppContext";
+import { slugify } from "../utils/slugify";
 
 function Sidebar() {
   const { subreddits, deleteSubreddit } = useAppContext();
@@ -126,7 +127,7 @@ function Sidebar() {
           <div key={sub.name} className={`subreddit-row${
             activeSubreddit===sub.name? ".active":""}${removingName === sub.name ? ".removing" : ""}`}>
             <Link
-              to={`/r/${sub.name}`}
+              to={`/r/${slugify(sub.name)}`}
               className="subreddit-link"
               onClick={() => setActiveSubreddit(sub.name)}
             >
