@@ -155,8 +155,10 @@ export function AppProvider({ children }) {
   const [state, dispatch] = useReducer(appReducer, initialState);
 
   // ---------------- FETCH POSTS ----------------
-  const fetchPosts = useCallback(async () => {
-    dispatch({type: "FETCH_POSTS_START"});
+  const fetchPosts = useCallback(async (silent=false) => {
+    if(!silent){
+      dispatch({type: "FETCH_POSTS_START"});
+    };
     try {
       const res = await fetch(`${API_BASE}/posts`);
       const data = await res.json();
@@ -210,8 +212,10 @@ export function AppProvider({ children }) {
   };
 
   // ---------------- FETCH SUBREDDITS ----------------
-  const fetchSubreddits = async () => {
-    dispatch({type:"FETCH_SUBREDDITS_START"})
+  const fetchSubreddits = useCallback(async (silent=false) => {
+    if(!silent){
+      dispatch({type:"FETCH_SUBREDDITS_START"});
+    }
     try {
       const res = await fetch(`${API_BASE}/subreddits`);
       const data = await res.json();
@@ -222,7 +226,7 @@ export function AppProvider({ children }) {
         payload: "Failed to fetch subreddits",
       })
     }
-  };
+  });
 
   // ---------------- CREATE SUBREDDIT ----------------
   const createSubreddit = async (name,iconFile,bannerFile) => {

@@ -1,10 +1,11 @@
 import { useState } from "react";
 import {Link, useNavigate, useLocation} from "react-router-dom";
+import { usePollingFetch } from "../hooks/usePollingFetch";
 import {useAppContext} from "../context/AppContext";
 import { slugify } from "../utils/slugify";
 
 function Sidebar() {
-  const { subreddits, deleteSubreddit } = useAppContext();
+  const { subreddits, deleteSubreddit, fetchSubreddits } = useAppContext();
   const [open, setOpen] = useState(false);
   const location = useLocation();
   const navigate = useNavigate();
@@ -53,7 +54,7 @@ function Sidebar() {
         prev.filter(feed => feed.id !== id)
     );
   }
-
+  usePollingFetch(fetchSubreddits,5000);
 
   return (
     <aside className="sidebar">

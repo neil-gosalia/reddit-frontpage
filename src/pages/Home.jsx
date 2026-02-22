@@ -1,19 +1,11 @@
 import { useAppContext } from "../context/AppContext";
-import { useEffect } from "react";
+import { usePollingFetch } from "../hooks/usePollingFetch";
 import PostCard from "../components/PostCard";
 
 function Home() {
   const { posts, fetchPosts } = useAppContext();
 
-  useEffect(() => {
-    fetchPosts(); // initial load
-
-    const interval = setInterval(() => {
-      fetchPosts();
-    }, 5000); // every 5 seconds
-
-    return () => clearInterval(interval);
-  }, []);
+  usePollingFetch(fetchPosts, 5000);
 
   const postList = (posts?.allIds || [])
     .map(id => posts.byId[id])
