@@ -213,9 +213,7 @@ export function AppProvider({ children }) {
 
   // ---------------- FETCH SUBREDDITS ----------------
   const fetchSubreddits = useCallback(async (silent=false) => {
-    if(!silent){
       dispatch({type:"FETCH_SUBREDDITS_START"});
-    }
     try {
       const res = await fetch(`${API_BASE}/subreddits`);
       const data = await res.json();

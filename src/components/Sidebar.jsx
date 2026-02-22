@@ -54,7 +54,7 @@ function Sidebar() {
         prev.filter(feed => feed.id !== id)
     );
   }
-  usePollingFetch(fetchSubreddits,5000);
+  // usePollingFetch(fetchSubreddits,5000);
 
   return (
     <aside className="sidebar">
