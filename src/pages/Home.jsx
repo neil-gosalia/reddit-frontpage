@@ -1,4 +1,5 @@
 import { useAppContext } from "../context/AppContext";
+import { useEffect } from "react";
 import PostCard from "../components/PostCard";
 
 function Home() {
