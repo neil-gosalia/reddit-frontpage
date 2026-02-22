@@ -50,43 +50,9 @@ body {
   font-size: 14px;
   color: #1c1c1c;
 }
-
-.post-image-container {
-  width: 100%;
-  overflow: hidden;
-  border-radius: 8px;
-  margin-top: 10px;
-  transition: height 0.3s ease;
-  background: #cecaca;
-}
-
-.post-image-container:hover{
-  max-height: 600px;
-}
-
-.post-image {
-  width: 100%;
-  height: 100%;
-  object-fit: contain; /* IMPORTANT */
-  display: block;
-}
-
 .search-input::placeholder {
   color: #878a8c;
 }
-
-.post-image-container.landscape {
-  height: 300px;
-}
-
-.post-image-container.portrait {
-  height: 420px;
-}
-
-.post-image-container.square {
-  height: 360px;
-}
-
 .layout {
   display: flex;
   background-color: white;
@@ -313,28 +279,26 @@ body {
   cursor: pointer;
   width: 9%;
 }
+.create-post-body {
+  width: 100%;
+  min-height: 140px;          /* 🔥 better typing space */
+  padding: 16px 18px;
+
+  font-size: 15px;
+  line-height: 1.6;
+
+  border-radius: 18px;
+  border: 1px solid #ccc;
+
+  background-color: #fafafa;
+  color: #1c1c1c;
+
+  resize: vertical;           /* allow vertical resize only */
+  transition: all 0.2s ease;
+}
 .create-post-save:hover{
   background-color: gray;
 }
-
-.image-upload {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 14px 16px;
-  border: 2px dashed #000000;
-  border-radius: 12px;
-  cursor: pointer;
-  background: white;
-  color: #555;
-  font-weight: 500;
-}
-
-.image-upload:hover {
-  border-color: #0079d3;
-  background: #f6f7f8;
-}
-
 .create-subreddit-save{
   display: flex;
   justify-content: flex-start;
@@ -511,4 +475,154 @@ body {
   border-radius: 20px;
   border: 1px solid black;
   margin-bottom: 12px;
+}
+
+.post-upload-box {
+  width: 520px;        /* fixed width */
+  height: 400px;       /* fixed height */
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border: 3px dashed #ff4500;
+  border-radius: 20px;
+
+  background-color: #fff8f2;
+  padding: 10px;
+}
+
+.post-preview-wrapper {
+  width: 100%;
+  height: 100%;
+}
+
+.post-preview-wrapper img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;   /* 🔥 maintains aspect ratio */
+}
+/* =============================== */
+/* CREATE SUBREDDIT UPLOAD SYSTEM */
+/* =============================== */
+
+.subreddit-upload-section {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  margin-top: 20px;
+  margin-bottom: 20px;
+}
+
+/* Base Upload Box */
+.subreddit-upload-box {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 100%;
+  max-width: 520px;
+  min-height: 130px;
+
+  border: 2px dashed #888;
+  border-radius: 18px;
+
+  background-color: #f5f5f5;
+  cursor: pointer;
+
+  overflow: hidden;
+  transition: all 0.2s ease;
+}
+
+.subreddit-upload-box:hover {
+  border-color: #555;
+  background-color: #ececec;
+}
+
+/* Upload Text */
+.subreddit-upload-text {
+  font-size: 18px;
+  font-weight: 600;
+  color: #333;
+}
+
+/* Icon specific styling */
+
+.subreddit-icon-preview {
+  width: 90px;
+  height: 90px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+/* Banner specific styling */
+
+
+.subreddit-banner-preview {
+  width: 100%;
+  height: 150px;
+  object-fit: cover;
+  border-radius: 12px;
+}
+
+.post-image-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+  margin-top: 15px;
+}
+
+/* Landscape images */
+.post-image-container.landscape {
+  max-width: 700px;
+  width: 100%;
+  max-height: 500px;
+}
+
+/* Portrait images */
+.post-image-container.portrait {
+  max-height: 700px;
+  max-width: 500px;
+  width: auto;
+}
+
+/* The image itself */
+.post-image-container img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;  /* 🔥 THIS PREVENTS CROPPING */
+}
+
+.upload-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 18px;
+  margin-top: 12px;
+  font-weight: 600;
+  border: 3px dashed #9a9794;
+  justify-content: center;
+  background-color: #fafdff;
+  color: #1c1c1c;
+  font-size: 14px;
+
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+/* Hover */
+.upload-btn:hover {
+  background-color: #cad0d6;
+  border-color: #4e4b4b;
+}
+
+/* Active click */
+.upload-btn:active {
+  transform: scale(0.97);
+}
+
+/* Icon */
+.upload-icon {
+  font-size: 16px;
 }

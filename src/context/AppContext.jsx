@@ -4,49 +4,92 @@ const AppContext = createContext(null);
 const API_BASE = "https://reddit-frontpage-backend.onrender.com";
 
 const initialState = {
-  posts: { byId: {}, allIds: [] },
-  subreddits: { byId: {}, allIds: [] },
+  posts: { byId: {}, allIds: [], loading: false, error: null },
+  subreddits: { byId: {}, allIds: [], loading: false, error: null },
 };
 
 function appReducer(state, action) {
   switch (action.type) {
+    case "FETCH_POSTS_START": 
+        return {
+          ...state,
+          posts:{
+            ...state.posts,
+            loading: true,
+            error: null
+          },
+        };
 
-    case "SET_POSTS": {
+    case "FETCH_POSTS_SUCCESS":{
       const byId = {};
       const allIds = [];
-
-      action.payload.forEach(post => {
+      action.payload.forEach(post=>{
         byId[post.id] = post;
         allIds.push(post.id);
       });
-
       return {
         ...state,
-        posts: { byId, allIds }
-      };
+        posts:{
+          byId,
+          allIds,
+          loading: false,
+          error: null,
+        }
+      }
     }
-
-    case "SET_SUBREDDITS": {
+    case "FETCH_POSTS_ERROR":
+      return{
+        ...state,
+        posts: {
+          ...state.posts,
+          loading: false,
+          error: action.payload,
+        },
+      };
+    case "FETCH_SUBREDDITS_START":
+      return {
+        ...state,
+        subreddits:{
+          ...state.subreddits,
+          loading: true,
+          error: null,
+        }
+      };
+    
+    case "FETCH_SUBREDDITS_SUCCESS":{
       const byId = {};
       const allIds = [];
-
-      action.payload.forEach(sub => {
+      action.payload.forEach(sub=>{
         byId[sub.id] = sub;
         allIds.push(sub.id);
       });
-
       return {
         ...state,
-        subreddits: { byId, allIds }
-      };
+        subreddits:{
+          byId,
+          allIds,
+          loading: false,
+          error: null
+        }
+      }
     }
 
+    case "FETCH_SUBREDDITS_ERROR":
+      return {
+        ...state,
+        subreddits:{
+          ...state.subreddits,
+          loading: false,
+          error: action.payload,
+        }
+      }
     case "ADD_POST": {
       const newPost = action.payload;
 
       return {
         ...state,
         posts: {
+          ...state.posts,
           byId: {
             ...state.posts.byId,
             [newPost.id]: newPost,
@@ -79,6 +122,7 @@ function appReducer(state, action) {
       return {
         ...state,
         posts: {
+          ...state.posts,
           byId: remaining,
           allIds: state.posts.allIds.filter(pid => pid !== id),
         },
@@ -112,31 +156,44 @@ export function AppProvider({ children }) {
 
   // ---------------- FETCH POSTS ----------------
   const fetchPosts = async () => {
+    dispatch({type: "FETCH_POSTS_START"});
     try {
       const res = await fetch(`${API_BASE}/posts`);
       const data = await res.json();
-      dispatch({ type: "SET_POSTS", payload: data });
+      dispatch({ type: "FETCH_POSTS_SUCCESS", payload: data });
     } catch (err) {
-      console.error("Failed to fetch posts", err);
+      dispatch({
+        type: "FETCH_POSTS_ERROR",
+        payload: "Failed to fetch posts"
+      })
     }
   };
 
   // ---------------- CREATE POST ----------------
-  const createPost = async (postData) => {
-    try {
-      console.log("Sending to backend", postData)
-      const res = await fetch(`${API_BASE}/posts`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(postData),
-      });
+  const createPost = async ({ title, body, subredditId, image }) => {
+    const formData = new FormData();
 
-      const createdPost = await res.json();
-      console.log("Backend returned:", createdPost);
-      dispatch({ type: "ADD_POST", payload: createdPost });
-    } catch (err) {
-      console.error("Failed to create post", err);
+    formData.append("title", title);
+    formData.append("body", body);
+    formData.append("subredditId", subredditId);
+
+    if (image) {
+      formData.append("image", image);
     }
+
+    const res = await fetch(`${API_BASE}/posts`, {
+      method: "POST",
+      body: formData,
+    });
+
+    const data = await res.json();
+
+    if (!res.ok) {
+      throw new Error(data.error || "Failed to create post");
+    }
+
+    dispatch({ type: "ADD_POST", payload: data });
+    return data;
   };
 
   // ---------------- DELETE POST ----------------
@@ -154,28 +211,39 @@ export function AppProvider({ children }) {
 
   // ---------------- FETCH SUBREDDITS ----------------
   const fetchSubreddits = async () => {
+    dispatch({type:"FETCH_SUBREDDITS_START"})
     try {
       const res = await fetch(`${API_BASE}/subreddits`);
       const data = await res.json();
-      dispatch({ type: "SET_SUBREDDITS", payload: data });
+      dispatch({ type: "FETCH_SUBREDDITS_SUCCESS", payload: data });
     } catch (err) {
-      console.error("Failed to fetch subreddits", err);
+      dispatch({
+        type:"FETCH_SUBREDDITS_ERROR",
+        payload: "Failed to fetch subreddits",
+      })
     }
   };
 
   // ---------------- CREATE SUBREDDIT ----------------
-  const createSubreddit = async (name) => {
+  const createSubreddit = async (name,iconFile,bannerFile) => {
     try {
+      const formData = new FormData();
+      formData.append("name",name);
+      formData.append("icon",iconFile);
+      formData.append("banner",bannerFile);
       const res = await fetch(`${API_BASE}/subreddits`, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ name }),
+        body: formData
       });
-
       const subreddit = await res.json();
+      if(!res.ok){
+        throw new Error(subreddit.error || "Failed to create subreddit.")
+      }
       dispatch({ type: "ADD_SUBREDDIT", payload: subreddit });
-    } catch (err) {
+      return subreddit;
+    }catch (err) {
       console.error("Failed to create subreddit", err);
+      throw err;
     }
   };
 

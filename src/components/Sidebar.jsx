@@ -1,21 +1,20 @@
 import { useState } from "react";
-import {Link, useNavigate, useParams} from "react-router-dom";
+import {Link, useNavigate, useLocation} from "react-router-dom";
 import {useAppContext} from "../context/AppContext";
 import { slugify } from "../utils/slugify";
 
 function Sidebar() {
   const { subreddits, deleteSubreddit } = useAppContext();
   const [open, setOpen] = useState(false);
+  const location = useLocation();
   const navigate = useNavigate();
   const [recentOpen,setRecentOpen] = useState(false) //for the recent
-  const [activeSubreddit, setActiveSubreddit] = useState(null);
   const [removingName, setRemovingName] = useState(null); //because of this,, now two communities can have the same title; but not the same name
   const [pendingDelete, setPendingDelete] = useState(null);
   const [feeds, setFeeds] = useState([
     { id: 1, name: "Feed One", isEditing: false },
     { id: 2, name: "Feed Two", isEditing: false }
   ]);
-
   function addDivs(){
     setFeeds(prev=>[...prev,{id:Date.now(),name:"New Div",isEditing:false}]);
   }
@@ -122,14 +121,14 @@ function Sidebar() {
     <h4>Subreddits</h4>
       {(subreddits?.allIds|| []).map(id=>{
         const sub = subreddits.byId[id];
+        const isActive = location.pathname === `/r/${slugify(sub.name)}`;
         if  (!sub) return null;
         return(
           <div key={sub.name} className={`subreddit-row${
-            activeSubreddit===sub.name? ".active":""}${removingName === sub.name ? ".removing" : ""}`}>
+            isActive===sub.name? ".active":""}${removingName === sub.name ? ".removing" : ""}`}>
             <Link
               to={`/r/${slugify(sub.name)}`}
               className="subreddit-link"
-              onClick={() => setActiveSubreddit(sub.name)}
             >
               <img src={sub.icon} className="subreddit-icon" />
               <span>r/{sub.name}</span>

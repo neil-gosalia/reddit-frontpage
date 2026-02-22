@@ -42,10 +42,10 @@ function PostCard({post}){
         }
     }
     return(
-        <div className="postcard">
+        <div className="postcard"> 
             <h3>{post.title}</h3>
             <p>{post.body}</p>
-            {post.icon && <PostImage src={post.icon}/>}
+            {post.image && <PostImage src={post.image}/>}
             <div className="options">
                 <div className="vote-container">
                     <button className={`vote-btn ${userVote===1?"active":""}`} onClick={handleUpvote}>⬆️</button>
