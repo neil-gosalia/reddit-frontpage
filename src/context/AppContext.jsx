@@ -1,4 +1,4 @@
-import { createContext, useContext, useReducer, useEffect } from "react";
+import { createContext, useContext, useReducer, useEffect, useCallback } from "react";
 
 const AppContext = createContext(null);
 const API_BASE = "https://reddit-frontpage-backend.onrender.com";
