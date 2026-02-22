@@ -1,6 +1,5 @@
-import { useState } from "react";
+import { useState,useEffect } from "react";
 import {Link, useNavigate, useLocation} from "react-router-dom";
-import { usePollingFetch } from "../hooks/usePollingFetch";
 import {useAppContext} from "../context/AppContext";
 import { slugify } from "../utils/slugify";
 
@@ -54,7 +53,10 @@ function Sidebar() {
         prev.filter(feed => feed.id !== id)
     );
   }
-  // usePollingFetch(fetchSubreddits,5000);
+  useEffect(() => {
+    const interval = setInterval(fetchSubreddits, 20000);
+    return () => clearInterval(interval);
+  }, [fetchSubreddits]);
 
   return (
     <aside className="sidebar">

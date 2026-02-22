@@ -224,7 +224,7 @@ export function AppProvider({ children }) {
         payload: "Failed to fetch subreddits",
       })
     }
-  });
+  },[]);
 
   // ---------------- CREATE SUBREDDIT ----------------
   const createSubreddit = async (name,iconFile,bannerFile) => {
@@ -265,8 +265,10 @@ export function AppProvider({ children }) {
   // ---------------- INITIAL LOAD ----------------
   useEffect(() => {
     fetchPosts();
+  }, [fetchPosts]);
+  useEffect(() => {
     fetchSubreddits();
-  }, []);
+  }, [fetchSubreddits]);
 
   return (
     <AppContext.Provider
