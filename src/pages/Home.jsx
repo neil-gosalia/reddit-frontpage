@@ -2,7 +2,17 @@ import { useAppContext } from "../context/AppContext";
 import PostCard from "../components/PostCard";
 
 function Home() {
-  const { posts } = useAppContext();
+  const { posts, fetchPosts } = useAppContext();
+
+  useEffect(() => {
+    fetchPosts(); // initial load
+
+    const interval = setInterval(() => {
+      fetchPosts();
+    }, 5000); // every 5 seconds
+
+    return () => clearInterval(interval);
+  }, []);
 
   const postList = (posts?.allIds || [])
     .map(id => posts.byId[id])

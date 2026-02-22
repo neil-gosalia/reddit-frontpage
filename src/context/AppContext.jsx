@@ -155,7 +155,7 @@ export function AppProvider({ children }) {
   const [state, dispatch] = useReducer(appReducer, initialState);
 
   // ---------------- FETCH POSTS ----------------
-  const fetchPosts = async () => {
+  const fetchPosts = useCallback(async () => {
     dispatch({type: "FETCH_POSTS_START"});
     try {
       const res = await fetch(`${API_BASE}/posts`);
@@ -167,7 +167,7 @@ export function AppProvider({ children }) {
         payload: "Failed to fetch posts"
       })
     }
-  };
+  },[]);
 
   // ---------------- CREATE POST ----------------
   const createPost = async ({ title, body, subredditId, image }) => {
