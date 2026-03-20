@@ -261,41 +261,22 @@ export function AppProvider({ children }) {
       throw err;
     }
   };
-  async function upvotePost(id) {
-    try {
-      const res = await fetch(`${API_BASE}/posts/${id}/upvote`, {
-        method: "PATCH",
-      });
-      const updatedPost = await res.json();
-      setPosts(prev => ({
-        ...prev,
-        byId: {
-          ...prev.byId,
-          [id]: { ...prev.byId[id], upvotes: updatedPost.upvotes }
-        }
-      }));
-    } catch (err) {
-      console.error("Failed to upvote", err);
-    }
+  async function votePost(id, delta) {
+  try {
+    const res = await fetch(`${API_BASE}/posts/${id}/vote`, {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ delta }),
+    });
+    const updatedPost = await res.json();
+    dispatch({
+      type: "UPDATE_POST_VOTES",
+      payload: { id, upvotes: updatedPost.upvotes }
+    });
+  } catch (err) {
+    console.error("Failed to vote", err);
   }
-
-  async function downvotePost(id) {
-    try {
-      const res = await fetch(`${API_BASE}/posts/${id}/upvote`, {
-        method: "PATCH",
-      });
-      const updatedPost = await res.json();
-      setPosts(prev => ({
-        ...prev,
-        byId: {
-          ...prev.byId,
-          [id]: { ...prev.byId[id], upvotes: updatedPost.upvotes }
-        }
-      }));
-    } catch (err) {
-      console.error("Failed to downvote", err);
-    }
-  }
+}
 
   // ---------------- DELETE SUBREDDIT ----------------
   const deleteSubreddit = async (id) => {
@@ -325,8 +306,7 @@ export function AppProvider({ children }) {
         subreddits: state.subreddits,
         createPost,
         createSubreddit,
-        upvotePost,
-        downvotePost,
+        votePost,
         deletePost,
         deleteSubreddit,
         fetchPosts,

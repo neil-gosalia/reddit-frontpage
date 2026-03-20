@@ -5,36 +5,18 @@ import { useAppContext } from "../context/AppContext";
 function PostCard({ post }) {
   const [userVote, setUserVote] = useState(0);
 
-  const { upvotePost, downvotePost, deletePost } = useAppContext();
+  const {votePost, deletePost } = useAppContext();
 
   function handleUpvote() {
-    if (userVote === 1) {
-      downvotePost(post.id);
-      setUserVote(0);
-    } else {
-      if (userVote === -1) {
-        upvotePost(post.id);
-        upvotePost(post.id);
-      } else {
-        upvotePost(post.id);
-      }
-      setUserVote(1);
-    }
+    if (userVote === 1)       { votePost(post.id, -1); setUserVote(0);  } // undo
+    else if (userVote === -1) { votePost(post.id, 2);  setUserVote(1);  } // switch
+    else                      { votePost(post.id, 1);  setUserVote(1);  } // fresh
   }
 
   function handleDownvote() {
-    if (userVote === -1) {
-      upvotePost(post.id);
-      setUserVote(0);
-    } else {
-      if (userVote === 1) {
-        downvotePost(post.id);
-        downvotePost(post.id);
-      } else {
-        downvotePost(post.id);
-      }
-      setUserVote(-1);
-    }
+    if (userVote === -1)      { votePost(post.id, 1);  setUserVote(0);  } // undo
+    else if (userVote === 1)  { votePost(post.id, -2); setUserVote(-1); } // switch
+    else                      { votePost(post.id, -1); setUserVote(-1); } // fresh
   }
 
   return (
