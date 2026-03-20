@@ -11,16 +11,32 @@ function Home() {
     .map(id => posts.byId[id])
     .filter(Boolean);
 
-  return (
-    <div>
-      <h2>Home Feed</h2>
-      {postList.length === 0 && <p>No posts yet</p>}
+return (
+  <div className="w-full">
 
-      {postList.map(post => (
-        <PostCard key={post.id} post={post} />
-      ))}
+    {/* Home Feed Header */}
+    <div className="flex items-center gap-3 mb-6">
+      <span className="text-2xl">🏠</span>
+      <div>
+        <h2 className="text-xl font-bold text-gray-900 m-0 leading-tight">Home Feed</h2>
+        <p className="text-xs text-gray-400 m-0">Your personalized posts</p>
+      </div>
     </div>
-  );
+
+    {postList.length === 0 && (
+      <p className="text-gray-400 text-sm">No posts yet</p>
+    )}
+
+    {postList.map(post => (
+      <PostCard key={post.id} post={post} />
+    ))}
+  </div>
+);
+// What this adds:
+
+// 🏠 icon alongside the title for visual anchoring
+// A subtle tagline "Your personalized posts" in gray below
+// An orange gradient line that flows from the title to the right — gives it a Reddit-like accent without being loud
 }
 
 export default Home;

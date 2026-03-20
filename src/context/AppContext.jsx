@@ -145,6 +145,19 @@ function appReducer(state, action) {
       // We DO NOT manually delete posts here
       // PostgreSQL handles cascade deletion
     }
+    case "UPDATE_POST_VOTES": {
+      const { id, upvotes } = action.payload;
+      return {
+        ...state,
+        posts: {
+          ...state.posts,
+          byId: {
+            ...state.posts.byId,
+            [id]: { ...state.posts.byId[id], upvotes }
+          }
+        }
+      };
+    }
 
     default:
       return state;
@@ -248,6 +261,41 @@ export function AppProvider({ children }) {
       throw err;
     }
   };
+  async function upvotePost(id) {
+    try {
+      const res = await fetch(`${API_BASE}/posts/${id}/upvote`, {
+        method: "PATCH",
+      });
+      const updatedPost = await res.json();
+      setPosts(prev => ({
+        ...prev,
+        byId: {
+          ...prev.byId,
+          [id]: { ...prev.byId[id], upvotes: updatedPost.upvotes }
+        }
+      }));
+    } catch (err) {
+      console.error("Failed to upvote", err);
+    }
+  }
+
+  async function downvotePost(id) {
+    try {
+      const res = await fetch(`${API_BASE}/posts/${id}/upvote`, {
+        method: "PATCH",
+      });
+      const updatedPost = await res.json();
+      setPosts(prev => ({
+        ...prev,
+        byId: {
+          ...prev.byId,
+          [id]: { ...prev.byId[id], upvotes: updatedPost.upvotes }
+        }
+      }));
+    } catch (err) {
+      console.error("Failed to downvote", err);
+    }
+  }
 
   // ---------------- DELETE SUBREDDIT ----------------
   const deleteSubreddit = async (id) => {
@@ -277,6 +325,8 @@ export function AppProvider({ children }) {
         subreddits: state.subreddits,
         createPost,
         createSubreddit,
+        upvotePost,
+        downvotePost,
         deletePost,
         deleteSubreddit,
         fetchPosts,

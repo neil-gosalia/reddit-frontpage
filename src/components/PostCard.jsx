@@ -1,62 +1,98 @@
-import {useState, useEffect} from "react"
-import PostImage from "./PostImage"
+import { useState, useEffect } from "react";
+import PostImage from "./PostImage";
 import { useAppContext } from "../context/AppContext";
 
-function PostCard({post}){
-    const savedVote = JSON.parse(localStorage.getItem(`vote-${post.id}`)) || {count:0, userVote: 0}
-    const [userVote, setUserVote] = useState(savedVote.userVote)
-    useEffect(() => {localStorage.setItem(`vote-${post.id}`,JSON.stringify({ userVote }));
-    }, [post.id, userVote]);
-    const { upvotePost, downvotePost, deletePost } = useAppContext();
-    function handleUpvote() {
-        if (userVote === 1) {
-      // remove upvote
-            downvotePost(post.id);
-            setUserVote(0);
-        }else{
-            if (userVote === -1) {
-                // switching from downvote → upvote
-                upvotePost(post.id);
-                upvotePost(post.id);
-            } else {
-                upvotePost(post.id);
-            }
-            setUserVote(1);
-        }
-    }
+function PostCard({ post }) {
+  const [userVote, setUserVote] = useState(0);
 
-    function handleDownvote() {
-        if (userVote === -1) {
-        // remove downvote
+  const { upvotePost, downvotePost, deletePost } = useAppContext();
+
+  function handleUpvote() {
+    if (userVote === 1) {
+      downvotePost(post.id);
+      setUserVote(0);
+    } else {
+      if (userVote === -1) {
         upvotePost(post.id);
-        setUserVote(0);
-        } else {
-        if (userVote === 1) {
-            // switching from upvote → downvote
-            downvotePost(post.id);
-            downvotePost(post.id);
-        } else {
-            downvotePost(post.id);
-        }
-        setUserVote(-1);
-        }
+        upvotePost(post.id);
+      } else {
+        upvotePost(post.id);
+      }
+      setUserVote(1);
     }
-    return(
-        <div className="postcard"> 
-            <h3>{post.title}</h3>
-            <p>{post.body}</p>
-            {post.image && <PostImage src={post.image}/>}
-            <div className="options">
-                <div className="vote-container">
-                    <button className={`vote-btn ${userVote===1?"active":""}`} onClick={handleUpvote}>⬆️</button>
-                    <div className="vote-count">{post.upvotes}</div>
-                    <button className={`vote-btn ${userVote===-1?"active":""}`} onClick={handleDownvote}>⬇️</button>
-                </div>
-                <button className="action-btn" onClick={()=>console.log("Liked Post",post.id)}>👍 Like</button>
-                <button className="action-btn" onClick={()=>deletePost(post.id)}>🗑️ Delete</button>
-            </div>
+  }
+
+  function handleDownvote() {
+    if (userVote === -1) {
+      upvotePost(post.id);
+      setUserVote(0);
+    } else {
+      if (userVote === 1) {
+        downvotePost(post.id);
+        downvotePost(post.id);
+      } else {
+        downvotePost(post.id);
+      }
+      setUserVote(-1);
+    }
+  }
+
+  return (
+    <div className="w-full bg-gray-100 rounded-lg border border-gray-300 p-4 mb-3">
+
+      <h3 className="text-base font-semibold text-gray-900 mb-1">{post.title}</h3>
+      <p className="text-sm text-gray-700 mb-2">{post.body}</p>
+
+      {post.image && (
+        <div className="w-full mb-3">
+          <PostImage src={post.image} />
         </div>
-    );
+      )}
+
+      {/* Actions row */}
+      <div className="flex flex-wrap items-center gap-2 mt-2">
+
+        {/* Vote container */}
+        <div className="flex items-center rounded-full bg-gray-200 h-8">
+          <button
+            onClick={handleUpvote}
+            className={`px-2 h-8 rounded-full border-none cursor-pointer transition-colors
+              ${userVote === 1 ? "bg-orange-500 text-white" : "bg-gray-200 hover:bg-gray-300"}`}
+          >
+            ⬆️
+          </button>
+          <span className="px-2 text-sm font-medium bg-gray-200">{post.upvotes}</span>
+          <button
+            onClick={handleDownvote}
+            className={`px-2 h-8 rounded-full border-none cursor-pointer transition-colors
+              ${userVote === -1 ? "bg-blue-500 text-white" : "bg-gray-200 hover:bg-gray-300"}`}
+          >
+            ⬇️
+          </button>
+        </div>
+
+        <button
+          onClick={() => console.log("Liked Post", post.id)}
+          className="h-8 px-3 rounded-full text-sm bg-gray-200 hover:bg-gray-300 border-none cursor-pointer"
+        >
+          👍 Like
+        </button>
+
+        <button
+          onClick={() => deletePost(post.id)}
+          className="h-8 px-3 rounded-full text-sm bg-gray-200 hover:bg-gray-300 border-none cursor-pointer"
+        >
+          🗑️ Delete
+        </button>
+
+      </div>
+    </div>
+  );
 }
 
 export default PostCard;
+// ```
+
+// Now in `index.css` you can **delete** these classes:
+// ```
+// .postcard, .options, .vote-container, .vote-btn, .vote-btn:active, .vote-count, .action-btn, .action-btn:hover
