@@ -32,11 +32,6 @@ return (
     ))}
   </div>
 );
-// What this adds:
-
-// 🏠 icon alongside the title for visual anchoring
-// A subtle tagline "Your personalized posts" in gray below
-// An orange gradient line that flows from the title to the right — gives it a Reddit-like accent without being loud
 }
 
 export default Home;

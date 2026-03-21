@@ -73,8 +73,3 @@ function PostCard({ post }) {
 }
 
 export default PostCard;
-// ```
-
-// Now in `index.css` you can **delete** these classes:
-// ```
-// .postcard, .options, .vote-container, .vote-btn, .vote-btn:active, .vote-count, .action-btn, .action-btn:hover

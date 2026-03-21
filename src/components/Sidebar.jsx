@@ -193,16 +193,3 @@ function Sidebar({ sidebarOpen }) {
 }
 
 export default Sidebar;
-// ```
-
-// Now in your `index.css`, you can **safely delete** these blocks since they're fully handled by Tailwind now:
-// ```
-// .sidebar, .sidebar.open, .sidebar-nav, .sidebar-item,
-// .sidebar-item:visited, .sidebar-item:hover, .sidebar-toggle,
-// .sidebar-toggle:hover, .sidebar-section, .sidebar-item.active,
-// .subreddit-row, .subreddit-link, .subreddit-icon,
-// .subreddit-row:hover, .subreddit-row.active,
-// .subreddit-row.active .subreddit-link, .subreddit-delete,
-// .subreddit-row:hover .subreddit-delete, .subreddit-delete:hover,
-// .subreddit-row.removing, .modal-overlay, .modal,
-// .modal-actions, .cancel-btn, .delete-btn (sidebar one)

@@ -111,11 +111,3 @@ function CreateSubreddit() {
 }
 
 export default CreateSubreddit;
-// ```
-
-// You can now delete from `index.css`:
-// ```
-// .create-subreddit, .create-subreddit-title, .create-subreddit-save, 
-// .create-subreddit-save:hover, .subreddit-upload-section, 
-// .subreddit-upload-box, .subreddit-upload-text, .subreddit-icon-preview, 
-// .subreddit-banner-preview, .upload-container

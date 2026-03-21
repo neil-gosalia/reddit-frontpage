@@ -141,9 +141,6 @@ function appReducer(state, action) {
           allIds: state.subreddits.allIds.filter(sid => sid !== id),
         },
       };
-      // 🚀 IMPORTANT:
-      // We DO NOT manually delete posts here
-      // PostgreSQL handles cascade deletion
     }
     case "UPDATE_POST_VOTES": {
       const { id, upvotes } = action.payload;
