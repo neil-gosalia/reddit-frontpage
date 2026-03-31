@@ -1,5 +1,5 @@
 import { createContext, useContext, useReducer, useEffect, useCallback } from "react";
-
+import { useAuth } from './AuthContext'
 const AppContext = createContext(null);
 const API_BASE = "https://reddit-frontpage-backend.onrender.com";
 
@@ -163,7 +163,7 @@ function appReducer(state, action) {
 
 export function AppProvider({ children }) {
   const [state, dispatch] = useReducer(appReducer, initialState);
-
+  const { token }  = useAuth;
   // ---------------- FETCH POSTS ----------------
   const fetchPosts = useCallback(async (silent=false) => {
     if(!silent){
@@ -195,6 +195,10 @@ export function AppProvider({ children }) {
 
     const res = await fetch(`${API_BASE}/posts`, {
       method: "POST",
+      headers: {
+        "Authorization": `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
       body: formData,
     });
 
@@ -213,6 +217,9 @@ export function AppProvider({ children }) {
     try {
       await fetch(`${API_BASE}/posts/${id}`, {
         method: "DELETE",
+        header: {
+          "Authorization": `Bearer ${token}`
+        }
       });
 
       dispatch({ type: "DELETE_POST", payload: id });
@@ -245,6 +252,10 @@ export function AppProvider({ children }) {
       formData.append("banner",bannerFile);
       const res = await fetch(`${API_BASE}/subreddits`, {
         method: "POST",
+        header: {
+          "Authorization": `Bearer ${token}`,
+          "Content-Type": "application/json"
+        },
         body: formData
       });
       const subreddit = await res.json();
@@ -262,7 +273,10 @@ export function AppProvider({ children }) {
   try {
     const res = await fetch(`${API_BASE}/posts/${id}/vote`, {
       method: "PATCH",
-      headers: { "Content-Type": "application/json" },
+      header: {
+          "Authorization": `Bearer ${token}`,
+          "Content-Type": "application/json"
+      },
       body: JSON.stringify({ delta }),
     });
     const updatedPost = await res.json();
@@ -280,6 +294,10 @@ export function AppProvider({ children }) {
     try {
       await fetch(`${API_BASE}/subreddits/${id}`, {
         method: "DELETE",
+        header: {
+          "Authorization": `Bearer ${token}`,
+          "Content-Type": "application/json"
+        },
       });
 
       dispatch({ type: "DELETE_SUBREDDIT", payload: id });
