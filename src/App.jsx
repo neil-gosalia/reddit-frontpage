@@ -1,5 +1,7 @@
 import { Routes, Route, useLocation } from "react-router-dom";
 import { useState, useEffect } from "react";
+import { AuthProvider } from "./context/AuthContext";
+import ProtectedRoute from "./routes/ProtectedRoutes";
 import Navbar from "./components/Navbar";
 import Sidebar from "./components/Sidebar";
 import Home from "./pages/Home";
@@ -45,9 +47,11 @@ function App() {
             <Routes>
               <Route path="/" element={<Home />} />
               <Route path="/r/:slug" element={<Subreddit />} />
-              <Route path="/r/:slug/submit" element={<CreatePost />} />
+              <Route path="/r/:slug/submit" element={
+                <ProtectedRoute><CreatePost /></ProtectedRoute>} />
               <Route path="/popular-posts" element={<Popular />} />
-              <Route path="/create-subreddit" element={<CreateSubreddit />} />
+              <Route path="/create-subreddit" element={
+                <ProtectedRoute><CreateSubreddit /></ProtectedRoute>} />
             </Routes>
           </ErrorBoundary>
         </main>
