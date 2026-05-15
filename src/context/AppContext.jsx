@@ -163,7 +163,7 @@ function appReducer(state, action) {
 
 export function AppProvider({ children }) {
   const [state, dispatch] = useReducer(appReducer, initialState);
-  const { token }  = useAuth;
+  const { token }  = useAuth();
   // ---------------- FETCH POSTS ----------------
   const fetchPosts = useCallback(async (silent=false) => {
     if(!silent){
@@ -172,7 +172,9 @@ export function AppProvider({ children }) {
     try {
       const res = await fetch(`${API_BASE}/posts`);
       const data = await res.json();
-      dispatch({ type: "FETCH_POSTS_SUCCESS", payload: data });
+      dispatch({ 
+        type: "FETCH_POSTS_SUCCESS", 
+        payload: Array.isArray(data)? data: [] });
     } catch (err) {
       dispatch({
         type: "FETCH_POSTS_ERROR",
@@ -197,7 +199,6 @@ export function AppProvider({ children }) {
       method: "POST",
       headers: {
         "Authorization": `Bearer ${token}`,
-        "Content-Type": "application/json",
       },
       body: formData,
     });
@@ -217,7 +218,7 @@ export function AppProvider({ children }) {
     try {
       await fetch(`${API_BASE}/posts/${id}`, {
         method: "DELETE",
-        header: {
+        headers: {
           "Authorization": `Bearer ${token}`
         }
       });
@@ -252,9 +253,8 @@ export function AppProvider({ children }) {
       formData.append("banner",bannerFile);
       const res = await fetch(`${API_BASE}/subreddits`, {
         method: "POST",
-        header: {
+        headers: {
           "Authorization": `Bearer ${token}`,
-          "Content-Type": "application/json"
         },
         body: formData
       });
@@ -273,9 +273,8 @@ export function AppProvider({ children }) {
   try {
     const res = await fetch(`${API_BASE}/posts/${id}/vote`, {
       method: "PATCH",
-      header: {
-          "Authorization": `Bearer ${token}`,
-          "Content-Type": "application/json"
+      headers: {
+          "Authorization": `Bearer ${token}`
       },
       body: JSON.stringify({ delta }),
     });
@@ -294,9 +293,8 @@ export function AppProvider({ children }) {
     try {
       await fetch(`${API_BASE}/subreddits/${id}`, {
         method: "DELETE",
-        header: {
+        headers: {
           "Authorization": `Bearer ${token}`,
-          "Content-Type": "application/json"
         },
       });
 
