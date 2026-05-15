@@ -1,6 +1,5 @@
 import { Routes, Route, useLocation } from "react-router-dom";
 import { useState, useEffect } from "react";
-import { AuthProvider } from "./context/AuthContext";
 import ProtectedRoute from "./routes/ProtectedRoutes";
 import Navbar from "./components/Navbar";
 import Sidebar from "./components/Sidebar";
@@ -10,6 +9,8 @@ import Popular from "./pages/Popular";
 import CreatePost from "./components/CreatePost";
 import CreateSubreddit from "./components/CreateSubreddit";
 import ErrorBoundary from "./ErrorBoundary";
+import Login from "./pages/Login.jsx"
+import Signup from "./pages/Signup.jsx"
 
 function App() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -19,7 +20,7 @@ function App() {
   }, [location.pathname]);
 
   return (
-    <div className="min-h-screen bg-white flex flex-col">
+      <div className="min-h-screen bg-white flex flex-col">
 
       {/* Navbar - fixed at top */}
       <div className="fixed top-0 left-0 right-0 z-50 bg-white border-b border-gray-200">
@@ -46,6 +47,8 @@ function App() {
           <ErrorBoundary>
             <Routes>
               <Route path="/" element={<Home />} />
+              <Route path="/login" element={<Login />} />
+              <Route path="/signup" element={<Signup />} />
               <Route path="/r/:slug" element={<Subreddit />} />
               <Route path="/r/:slug/submit" element={
                 <ProtectedRoute><CreatePost /></ProtectedRoute>} />
@@ -57,7 +60,7 @@ function App() {
         </main>
 
       </div>
-    </div>
+    </div> 
   );
 }
 
